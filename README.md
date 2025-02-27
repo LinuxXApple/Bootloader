@@ -25,8 +25,8 @@ A flexible and user-friendly UEFI bootloader implementation with USB boot suppor
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/uefi-usb-bootloader
-cd uefi-usb-bootloader
+git clone https://github.com/LinuxXApple/bootloader
+cd bootloader
 
 # Build the bootloader
 make clean && make
