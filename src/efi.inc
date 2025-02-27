@@ -61,9 +61,6 @@ struc BOOT_CONFIG
     .LogoPath:      resb 256
     .DefaultEntry:  resb 1
     .Timeout:       resb 1
-    .Logo1Hash:     resb 32    ; SHA-256 hash of boot1.png
-    .Logo2Hash:     resb 32    ; SHA-256 hash of boot2.png
-    .ConfigHash:    resb 32    ; SHA-256 hash of config (excluding hash fields)
 endstruc
 
 ; Image format structures
