@@ -4,12 +4,13 @@ LD = ld
 CFLAGS = -f elf64
 LDFLAGS = -T src/linker.ld -z noexecstack
 
-SOURCES = src/boot.asm src/main.asm src/logo.asm src/config.asm
+SOURCES = src/boot.asm src/main.asm src/logo.asm src/config.asm src/checksums.asm
 OBJECTS = $(SOURCES:.asm=.o)
 
 TARGET = bootloader.efi
+CHECKSUM_TOOL = src/tools/update_checksums.py
 
-.PHONY: all clean install install-usb
+.PHONY: all clean install install-usb install-home update-checksums verify-checksums
 
 all: $(TARGET)
 
@@ -22,20 +23,46 @@ $(TARGET): $(OBJECTS)
 clean:
 	rm -f $(OBJECTS) $(TARGET)
 
+# Update checksums after file changes
+update-checksums:
+	@echo "Updating checksums using Python utility..."
+	python3 $(CHECKSUM_TOOL)
+
+# Verify checksums
+verify-checksums:
+	@echo "Verifying checksums..."
+	python3 $(CHECKSUM_TOOL) --verify
+
+# Install to user's home directory
+install-home: $(TARGET) update-checksums
+	@echo "Installing bootloader to home directory..."
+	mkdir -p $(HOME)/EFI/BOOT
+	cp $(TARGET) $(HOME)/EFI/BOOT/BOOTX64.EFI
+	cp src/boot1.png $(HOME)/EFI/BOOT/boot1.png
+	cp src/boot2.png $(HOME)/EFI/BOOT/boot2.png
+	cp src/config.cfg $(HOME)/EFI/BOOT/config.cfg
+	EFI_BOOT_PATH=$(HOME)/EFI/BOOT python3 $(CHECKSUM_TOOL)
+	@echo "Bootloader installed successfully to $(HOME)/EFI/BOOT"
+	@echo "Installation complete!"
+
 # Install to local EFI directory
-install: $(TARGET)
+install: $(TARGET) update-checksums
 	mkdir -p /boot/efi/EFI/BOOT
 	cp $(TARGET) /boot/efi/EFI/BOOT/BOOTX64.EFI
-	cp attached_assets/boot1.png /boot/efi/EFI/BOOT/boot1.png
-	cp attached_assets/boot2.png /boot/efi/EFI/BOOT/boot2.png
+	cp src/boot1.png /boot/efi/EFI/BOOT/boot1.png
+	cp src/boot2.png /boot/efi/EFI/BOOT/boot2.png
+	cp src/config.cfg /boot/efi/EFI/BOOT/config.cfg
+	python3 $(CHECKSUM_TOOL)
 
 # Install to USB drive (run as root, USB must be mounted at /mnt/usb)
-install-usb: $(TARGET)
+install-usb: $(TARGET) update-checksums
 	@echo "Installing bootloader to USB drive mounted at /mnt/usb..."
 	mkdir -p /mnt/usb/boot/efi/EFI/BOOT
 	cp $(TARGET) /mnt/usb/boot/efi/EFI/BOOT/BOOTX64.EFI
-	cp attached_assets/boot1.png /mnt/usb/boot/efi/EFI/BOOT/boot1.png
-	cp attached_assets/boot2.png /mnt/usb/boot/efi/EFI/BOOT/boot2.png
+	cp src/boot1.png /mnt/usb/boot/efi/EFI/BOOT/boot1.png
+	cp src/boot2.png /mnt/usb/boot/efi/EFI/BOOT/boot2.png
+	cp src/config.cfg /mnt/usb/boot/efi/EFI/BOOT/config.cfg
+	python3 $(CHECKSUM_TOOL)
 	@echo "Bootloader installed successfully."
 	@echo "Note: Your kernel should be placed at /mnt/usb/boot/vmlinuz"
 	@echo "USB installation instructions:"
