@@ -26,8 +26,8 @@ WARNING PLEASE READ! I am not responsible for any damage you do to data or hardw
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/uefi-usb-bootloader
-cd uefi-usb-bootloader
+git clone https://github.com/LinuxXApple/bootloader
+cd bootloader
 
 # Build the bootloader
 make clean && make
@@ -55,12 +55,12 @@ sudo make install-usb
 
 4. Copy your kernel:
 ```bash
-sudo cp /path/to/your/kernel /mnt/usb/boot/vmlinuz
+sudo cp /path/to/your/kernel /path/to/you/usb/boot/vmlinuz
 ```
 
 5. Unmount:
 ```bash
-sudo umount /mnt/usb
+sudo umount /path/to/your/usb
 ```
 
 ### Boot Menu Options
