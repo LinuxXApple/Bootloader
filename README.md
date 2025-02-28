@@ -1,6 +1,6 @@
-# UEFI USB Bootloader
+# Bootloader
 
-A flexible and user-friendly UEFI bootloader implementation with USB boot support and custom logo capabilities.
+A flexible and user-friendly UEFI bootloader implementation with USB boot support and custom logo capabilities. PLEASE READ I am not responsible for any damage this software causes to data with the beta disk format
 
 ![Boot Logo 1](attached_assets/boot1.png)
 ![Boot Logo 2](attached_assets/boot2.png)
